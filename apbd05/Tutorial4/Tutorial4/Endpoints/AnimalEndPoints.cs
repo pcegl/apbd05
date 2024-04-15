@@ -21,13 +21,26 @@ public static class AnimalEndPoints
         });
         app.MapPost("/animals", (Animal animal) =>
         {
+            StaticData.animals.Add(animal);
             return Results.Created("", animal);
         });
 
         app.MapGet("/animals/{id}", (int id) =>
         {
-            return Results.Ok(id);
+            return Results.Ok(StaticData.animals.FirstOrDefault(animal => animal.Id == id));
         });
-
+        app.MapPut("/animals/{id}", (int id, Animal animal) =>
+        {
+            var cos = StaticData.animals.FirstOrDefault(animal => animal.Id == id);
+            StaticData.animals.Remove(cos);
+            StaticData.animals.Add(animal);
+            return TypedResults.Ok(animal);
+        });
+        app.MapDelete("/animals/{id}", (int id) =>
+        {
+            var cos = StaticData.animals.FirstOrDefault(animal => animal.Id == id);
+            StaticData.animals.Remove(cos);
+            return TypedResults.Ok();
+        });
     }
 }
